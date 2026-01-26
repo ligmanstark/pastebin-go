@@ -22,7 +22,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	db := services.InitDB()
 	defer db.Close()
 
-	_, err := db.Exec("INSERT INTO users (name, role_id) VALUES ($1, $2)", user.Name, user.RoleID)
+	_, err := db.Exec("INSERT INTO users (name, password, role_id) VALUES ($1, $2)", user.Name, user.Password, user.RoleID)
 	if err != nil {
 		http.Error(w, "Failed creating user: "+err.Error(), http.StatusInternalServerError)
 		return

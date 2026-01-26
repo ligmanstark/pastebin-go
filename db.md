@@ -14,3 +14,5 @@ psql -h localhost -U pastebin-db-user -d pastebin-db
 INSERT INTO [NAME_TABLE] ([ROW]) VALUES ([VALUE]) - добавь строку в таблицу в таблицу NAME_TABLE, устанавливая значение столбца ROW равным VALUE
 
 \i migration/005_create_users.sql - миграция
+
+pg_dump -h localhost -p 54772 -U postgres_db_user -d postgres > backup.sql - создание дампа

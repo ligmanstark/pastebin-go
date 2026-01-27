@@ -49,7 +49,7 @@ func GetAllUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var users []model.User
 	for rows.Next() {
 		var user model.User
-		if err := rows.Scan(&user.ID, &user.Name, &user.RoleID); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.RoleID, &user.Password); err != nil {
 			http.Error(w, "Failed to scan user: "+err.Error(), http.StatusInternalServerError)
 			return
 		}

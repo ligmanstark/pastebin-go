@@ -16,3 +16,5 @@ INSERT INTO [NAME_TABLE] ([ROW]) VALUES ([VALUE]) - добавь строку в
 \i migration/005_create_users.sql - миграция
 
 pg_dump -h localhost -p 54772 -U postgres_db_user -d postgres > backup.sql - создание дампа
+
+psql -U <пользователь> -d <база_данных> -f путь_к_дампу.sql - применение дампа

@@ -35,3 +35,6 @@ connect-db:
 
 create-dump:
 	docker exec -t pastebin-db-1 pg_dump -U $(DB_USER) $(DB_DBNAME) > dumps/dump.sql
+
+accept-dump:
+	cat dumps/dump.sql | docker exec -i pastebin-db-1 psql -U $(DB_USER) -d $(DB_DBNAME)

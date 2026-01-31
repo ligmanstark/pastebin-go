@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"io"
 	"ligmanstark/pastebin-go/model"
 	"ligmanstark/pastebin-go/services"
 	"net/http"
@@ -13,17 +14,19 @@ func CreatePastebinHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var pastebin model.Pastebin
-	if err := json.NewDecoder(r.Body).Decode(&pastebin); err != nil {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	pastebin.Content = string(body)
 	db := services.InitDB()
 	defer db.Close()
 
 	generatedSlug := services.GenerateRandomSlug()
 	pastebin.UrlSlug = generatedSlug
 
-	_, err := db.Exec("INSERT INTO pastebin (content, url_slug) VALUES ($1, $2)", pastebin.Content, pastebin.UrlSlug)
+	_, err = db.Exec("INSERT INTO pastebin (content, url_slug) VALUES ($1, $2)", pastebin.Content, pastebin.UrlSlug)
 	if err != nil {
 		http.Error(w, "Failed creating pastebin: "+err.Error(), http.StatusInternalServerError)
 		return

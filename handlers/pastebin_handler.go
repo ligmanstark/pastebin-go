@@ -32,7 +32,7 @@ func CreatePastebinHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pastebin)
 }
 
-func GetPastebinBySlug(w http.ResponseWriter, r *http.Request) {
+func GetPastebinBySlugHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -50,4 +50,32 @@ func GetPastebinBySlug(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(pastebin)
+}
+
+func GetPastebinAllHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	db := services.InitDB()
+	defer db.Close()
+
+	rows, err := db.Query("SELECT * FROM pastebin")
+	if err != nil {
+		http.Error(w, "Failed to retrieve pastebins: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var pastebins []model.Pastebin
+	for rows.Next() {
+		var pastebin model.Pastebin
+		if err := rows.Scan(&pastebin.ID, &pastebin.Content, &pastebin.CreatedAt, &pastebin.UrlSlug); err != nil {
+			http.Error(w, "Failed to scan pastebin: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		pastebins = append(pastebins, pastebin)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(pastebins)
 }

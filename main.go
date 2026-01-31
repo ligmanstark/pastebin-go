@@ -27,7 +27,9 @@ func main() { // This is a placeholder for the main function.
 
 	http.HandleFunc("/pastebin/create", handlers.CreatePastebinHandler)
 
-	http.HandleFunc("/pastebin", handlers.GetPastebinBySlug)
+	http.HandleFunc("/pastebin", handlers.GetPastebinBySlugHandler)
+
+	http.HandleFunc("/pastebin/all", handlers.GetPastebinAllHandler)
 
 	log.Fatal(http.ListenAndServe(":5555", nil))
 

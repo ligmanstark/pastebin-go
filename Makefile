@@ -4,16 +4,16 @@ ifneq (,$(wildcard .env))
 endif
 
 deploy-prod:
-	docker compose -f docker-compose.prod.yml up -d
+	docker compose -f docker-compose.prod.yml up -d --build
 
 down-prod:
-	docker compose -f docker-compose.prod.yml down
+	docker compose -f docker-compose.prod.yml down -v
 
 deploy-local:
-	docker-compose -f docker-compose.local.yml up -d
+	docker-compose -f docker-compose.local.yml up -d --build
 
 down-local:
-	docker-compose -f docker-compose.local.yml down
+	docker-compose -f docker-compose.local.yml down -v
 
 migrate-up:
 	docker run --rm --network pastebin_pastebin_net -v $(PWD)/migrations:/migrations --env-file .env migrate/migrate -path /migrations -database "postgres://$(DB_USER):$(DB_PASSWORD)@db:5432/$(DB_DBNAME)?sslmode=$(DB_SSLMODE)" up

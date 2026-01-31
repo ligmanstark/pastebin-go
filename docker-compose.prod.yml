@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  pastebin:
+    build: .
+    container_name: pastebin_backend
+    restart: unless-stopped
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - apps_net
+      - infra_net
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DBNAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - infra_net
+
+  migrate:
+    image: migrate/migrate
+    container_name: pastebin_migrate
+    restart: "no"
+    volumes:
+      - ./migrations:/migrations
+    env_file:
+      - .env
+    command: ["-path", "/migrations", "-database", "postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_DBNAME}?sslmode=${DB_SSLMODE}", "up"]
+    depends_on:
+      - db
+    networks:
+      - infra_net
+volumes:
+  db_data:
+
+networks:
+  apps_net:
+    external: true
+  infra_net:
+    external: true

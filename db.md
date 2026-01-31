@@ -7,10 +7,11 @@ docker run --name pastebin-postgres -e POSTGRES_USER=pastebin-db-user -e POSTGRE
 
 ## Вход в БД
 ```
-psql -h localhost -U pastebin-db-user -d pastebin-db 
+psql -h localhost -U postgres_db_user -d postgres_db
 ```
 
 ## Команды
+```
 INSERT INTO [NAME_TABLE] ([ROW]) VALUES ([VALUE]) - добавь строку в таблицу в таблицу NAME_TABLE, устанавливая значение столбца ROW равным VALUE
 
 \i migration/005_create_users.sql - миграция
@@ -18,3 +19,12 @@ INSERT INTO [NAME_TABLE] ([ROW]) VALUES ([VALUE]) - добавь строку в
 pg_dump -h localhost -p 54772 -U postgres_db_user -d postgres > backup.sql - создание дампа
 
 psql -U <пользователь> -d <база_данных> -f путь_к_дампу.sql - применение дампа
+```
+
+## Тестовые curl-запросы
+```bash
+curl -X POST http://localhost:5555/pastebin/create \
+       -H "Content-Type: application/json" \
+       -d '{"content":"hello"}'
+Pastebin created successfully
+```

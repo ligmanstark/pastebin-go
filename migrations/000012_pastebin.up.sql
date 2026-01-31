@@ -1,0 +1,6 @@
+CREATE TABLE pastebin (
+    id SERIAL PRIMARY KEY,
+    content TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    url_slug TEXT NOT NULL UNIQUE
+);

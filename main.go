@@ -5,19 +5,29 @@ import (
 	"ligmanstark/pastebin-go/handlers"
 	"log"
 	"net/http"
+
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() { // This is a placeholder for the main function.
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
+	appHost := os.Getenv("APP_HOST")
+	appPort := os.Getenv("APP_PORT")
 	helloHandler := func(w http.ResponseWriter, req *http.Request) {
-		io.WriteString(w, ("Hello from 5555!"))
+		io.WriteString(w, (" Host: " + appHost + " Port: " + appPort))
 	}
 
 	http.HandleFunc("/", helloHandler)
 
-	http.HandleFunc("/users/create", handlers.CreateUserHandler)
+	http.HandleFunc("/pastebin/create", handlers.CreatePastebinHandler)
 
-	http.HandleFunc("/users", handlers.GetAllUsersHandler)
+	http.HandleFunc("/pastebin", handlers.GetPastebinBySlug)
 
 	log.Fatal(http.ListenAndServe(":5555", nil))
 

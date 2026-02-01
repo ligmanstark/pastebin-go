@@ -23,7 +23,7 @@ func CreatePastebinHandler(w http.ResponseWriter, r *http.Request) {
 	db := services.InitDB()
 	defer db.Close()
 
-	generatedSlug := services.GenerateRandomSlug()
+	generatedSlug := services.GenerateRandomSlug(8)
 	pastebin.UrlSlug = generatedSlug
 
 	_, err = db.Exec("INSERT INTO pastebin (content, url_slug) VALUES ($1, $2)", pastebin.Content, pastebin.UrlSlug)

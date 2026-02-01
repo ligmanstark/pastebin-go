@@ -2,17 +2,18 @@ package services
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 )
 
-func GenerateRandomSlug() string {
-	lengthSlug := 8
+func GenerateRandomSlug(lengthSlug int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	slug := make([]byte, lengthSlug)
 	for i := range slug {
 		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
 		if err != nil {
-			panic(err)
+			fmt.Println("Error generating random slug:", err)
+			return ""
 		}
 		slug[i] = charset[num.Int64()]
 	}

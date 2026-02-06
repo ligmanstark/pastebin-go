@@ -34,7 +34,7 @@ connect-db:
 	docker run -it --rm --network $(network_name) --env-file .env postgres psql -h db -U $(DB_USER) -d $(DB_DBNAME)
 
 create-dump:
-	docker exec -t pastebin-db-1 pg_dump -U $(DB_USER) $(DB_DBNAME) > dumps/dump.sql
+	docker exec -t pastebin-go-db-1 pg_dump -U $(DB_USER) $(DB_DBNAME) > dumps/dump.sql
 
 accept-dump:
-	cat dumps/dump.sql | docker exec -i pastebin-db-1 psql -U $(DB_USER) -d $(DB_DBNAME)
+	cat dumps/dump.sql | docker exec -i pastebin-go-db-1 psql -U $(DB_USER) -d $(DB_DBNAME)

@@ -5,10 +5,10 @@ import (
 	"ligmanstark/pastebin-go/handlers"
 	"log"
 	"net/http"
-
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 func main() { // This is a placeholder for the main function.
@@ -31,6 +31,14 @@ func main() { // This is a placeholder for the main function.
 
 	http.HandleFunc("/pastebin/all", handlers.GetPastebinAllHandler)
 
-	log.Fatal(http.ListenAndServe(":5555", nil))
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type"},
+		AllowCredentials: true,
+	})
+
+	handler := c.Handler(http.DefaultServeMux)
+	log.Fatal(http.ListenAndServe(":5555", handler))
 
 }

@@ -25,6 +25,6 @@ psql -U <пользователь> -d <база_данных> -f путь_к_д�
 ```bash
 curl -X POST http://localhost:5555/pastebin/create \
        -H "Content-Type: application/json" \
-       -d '{"content":"hello"}'
+       -d 'hello'
 Pastebin created successfully
 ```

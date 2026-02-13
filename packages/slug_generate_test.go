@@ -15,7 +15,12 @@ func TestGenerateRandomSlug(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateRandomSlug(tt.lengthSlug)
+			got, err := GenerateRandomSlug(tt.lengthSlug)
+			if err != nil {
+				t.Errorf("GenerateRandomSlug(%d) returned error: %v", tt.lengthSlug, err)
+				return
+			}
+
 			if len(got) != tt.wantLength {
 				t.Errorf("GenerateRandomSlug(%d) returned length %d; want %d", tt.lengthSlug, len(got), tt.wantLength)
 			}

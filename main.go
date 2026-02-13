@@ -1,44 +1,58 @@
 package main
 
 import (
-	"io"
-	"ligmanstark/pastebin-go/handlers"
 	"log"
-	"net/http"
+
+	pkg "ligmanstark/pastebin_v2/packages"
+
 	"os"
 
+	v1 "ligmanstark/pastebin_v2/handlers/v1"
+	v2 "ligmanstark/pastebin_v2/handlers/v2"
+	"ligmanstark/pastebin_v2/service"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 )
 
-func main() { // This is a placeholder for the main function.
+func init() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	db := pkg.InitDB()
+	pastebinService := service.NewPastebinService(db)
+	v2.SetPastebinService(pastebinService)
+}
+
+func main() {
+
 	appHost := os.Getenv("APP_HOST")
 	appPort := os.Getenv("APP_PORT")
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
-		io.WriteString(w, (" Host: " + appHost + " Port: " + appPort))
+
+	router := gin.Default()
+	router.Use(cors.Default())
+
+	v1Group := router.Group("/api/v1")
+	{
+		v1Group.POST("/pastebin/create", v1.CreatePastebinHandlerWrapper)
+		v1Group.GET("/pastebin/:slug", v1.GetPastebinBySlugHandlerWrapper)
+		v1Group.GET("/pastebin/all", v1.GetPastebinAllHandlerWrapper)
 	}
 
-	http.HandleFunc("/", helloHandler)
+	v2Group := router.Group("/api/v2")
+	{
+		v2Group.POST("/text/create", v2.CreateTextPastebinHandler)
+		v2Group.GET("/text/:slug", v2.GetTextPastebinBySlugHandler)
+		v2Group.GET("/text/all", v2.GetTextPastebinAllHandler)
 
-	http.HandleFunc("/pastebin/create", handlers.CreatePastebinHandler)
+		v2Group.POST("/image/create", v2.CreateImagePastebinHandler)
+		v2Group.GET("/image/:slug", v2.GetImagePastebinBySlugHandler)
 
-	http.HandleFunc("/pastebin", handlers.GetPastebinBySlugHandler)
+	}
 
-	http.HandleFunc("/pastebin/all", handlers.GetPastebinAllHandler)
-
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type"},
-		AllowCredentials: true,
-	})
-
-	handler := c.Handler(http.DefaultServeMux)
-	log.Fatal(http.ListenAndServe(":5555", handler))
+	log.Fatal(router.Run(appHost + ":" + appPort))
 
 }

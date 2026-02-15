@@ -6,16 +6,16 @@ import (
 	"math/big"
 )
 
-func GenerateRandomSlug(lengthSlug int) string {
+func GenerateRandomSlug(lengthSlug int) (string, error) {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	slug := make([]byte, lengthSlug)
 	for i := range slug {
 		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
 		if err != nil {
 			fmt.Println("Error generating random slug:", err)
-			return ""
+			return "", err
 		}
 		slug[i] = charset[num.Int64()]
 	}
-	return string(slug)
+	return string(slug), nil
 }

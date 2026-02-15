@@ -1,4 +1,4 @@
-CREATE TABLE pastebin (
+CREATE TABLE Text_Pastebin (
     id SERIAL PRIMARY KEY,
     content TEXT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

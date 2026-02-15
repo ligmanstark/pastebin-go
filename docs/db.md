@@ -21,10 +21,4 @@ pg_dump -h localhost -p 54772 -U postgres_db_user -d postgres > backup.sql - с�
 psql -U <пользователь> -d <база_данных> -f путь_к_дампу.sql - применение дампа
 ```
 
-## Тестовые curl-запросы
-```bash
-curl -X POST http://localhost:5555/pastebin/create \
-       -H "Content-Type: application/json" \
-       -d 'hello'
-Pastebin created successfully
-```
+ 

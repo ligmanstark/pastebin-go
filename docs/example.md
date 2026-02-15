@@ -40,7 +40,7 @@ curl -X POST http://localhost:5555/api/v2/text/create -H "Content-Type: applicat
 
 response:
 ```bash
-{"id":0,"content":"hello","created_at":"0001-01-01T00:00:00Z","url_slug":"NoGDQT6E"}
+{"url_slug":"NoGDQT6E"}
 ```
 
 ---

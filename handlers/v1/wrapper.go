@@ -10,7 +10,12 @@ func CreatePastebinHandlerWrapper(ctx *gin.Context) {
 }
 
 func GetPastebinBySlugHandlerWrapper(ctx *gin.Context) {
+	slug := ctx.Param("slug")
 	req := ctx.Request
+	if slug != "" && req != nil && req.URL != nil {
+		query := req.URL.Query()
+		query.Set("id", slug)
+	}
 	GetPastebinBySlugHandler(ctx.Writer, req)
 }
 

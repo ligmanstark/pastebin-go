@@ -1,1 +1,1 @@
-DROP TABLE Image_Pastebin;
+DROP TABLE Text_Pastebin;

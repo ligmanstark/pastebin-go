@@ -34,7 +34,7 @@ type TextPastebin interface {
 }
 
 type ImagePastebin interface {
-	CreateImagePastebin(image_data []byte) (CreateResponse, ErrorResponse)
+	CreateImagePastebin(image_data []byte, fileSize int, mimeType string) (CreateResponse, ErrorResponse)
 	GetImagePastebinBySlug(slug string) (v2.ImagePastebin, ErrorResponse)
 	GetAllImagePastebins() ([]v2.ImagePastebin, ErrorResponse)
 }
@@ -116,7 +116,10 @@ func (service *PastebinService) CreateImagePastebin(image_data []byte, fileSize 
 		return CreateResponse{}, ErrorResponse{Code: 500, Message: "Ошибка генерации URL: " + err.Error()}
 	}
 
-	os.MkdirAll(UPLOAD_DIR, os.ModePerm)
+	err = os.MkdirAll(UPLOAD_DIR, os.ModePerm)
+	if err != nil {
+		return CreateResponse{}, ErrorResponse{Code: 500, Message: "Ошибка создания директории для загрузки: " + err.Error()}
+	}
 
 	ext := pkg.GetExtensionMime(mimeType)
 	filePath := filepath.Join(UPLOAD_DIR, slug+ext)
@@ -151,7 +154,7 @@ func (service *PastebinService) GetImagePastebinBySlug(slug string) (v2.ImagePas
 	filePath := filepath.Join(UPLOAD_DIR, slug+ext)
 	imageData, err := os.ReadFile(filePath)
 	if err != nil {
-		return v2.ImagePastebin{}, ErrorResponse{Code: 500, Message: "Ошибка чтения файла: " + err.Error()}
+		return v2.ImagePastebin{}, ErrorResponse{Code: 404, Message: "Изображение не найдено: " + err.Error()}
 	}
 	pastebin.ImageData = imageData
 	return pastebin, ErrorResponse{}

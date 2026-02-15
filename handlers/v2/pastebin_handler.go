@@ -35,7 +35,7 @@ func CreateTextPastebinHandler(ctx *gin.Context) {
 		ctx.JSON(errResp.Code, errResp)
 		return
 	}
-	ctx.JSON(301, response)
+	ctx.JSON(201, response)
 }
 
 func GetTextPastebinBySlugHandler(ctx *gin.Context) {
@@ -102,7 +102,7 @@ func CreateImagePastebinHandler(ctx *gin.Context) {
 		ctx.JSON(errResp.Code, errResp)
 		return
 	}
-	ctx.JSON(301, response)
+	ctx.JSON(201, response)
 }
 
 func GetImagePastebinBySlugHandler(ctx *gin.Context) {
